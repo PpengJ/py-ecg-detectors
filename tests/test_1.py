@@ -6,6 +6,8 @@ from testfile import qiuhe
 from ecgdetectors import Detectors
 import matplotlib.pyplot as plt
 
+# 分别计算处理结果实际输出和预期输出数组的相邻元素之间的差值，并进行对比，若实际输出数组的差值在误差允许范围内，即可认为该探测器正常工作
+
 class Testecgdetectors(unittest.TestCase):
     def test_init(self):
         current_dir = pathlib.Path(__file__).resolve()
