@@ -26,14 +26,15 @@ else:
     for i in range(len(detectors.get_detector_list())):
         print(i,detectors.get_detector_list()[i][0])
     print("The default detector is the Two Average detector.")
-
-if seldet < 0:
-    # default detector
-    r_peaks = detectors.two_average_detector(unfiltered_ecg)
-else:
-    # We use the input argument to select a detector
-    r_peaks = detectors.get_detector_list()[seldet][1](unfiltered_ecg)
-
+print(len(unfiltered_ecg))
+# if seldet < 0:
+#     # default detector
+#     r_peaks = detectors.two_average_detector(unfiltered_ecg)
+# else:
+#     # We use the input argument to select a detector
+#     r_peaks = detectors.get_detector_list()[seldet][1](unfiltered_ecg)
+# print(r_peaks)
+# print(len(r_peaks))
 # If you want to always use the same det then directly call it:
 #r_peaks = detectors.two_average_detector(unfiltered_ecg)
 #r_peaks = detectors.matched_filter_detector(unfiltered_ecg,"templates/template_250hz.csv")
