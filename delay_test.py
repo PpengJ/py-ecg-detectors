@@ -24,8 +24,8 @@ for subject_dir in subjects:
             example_answer_dat1 = np.loadtxt(annotation_file)
             example_answer_dat2 = example_answer_dat1.ravel()
             example_answer_dat = example_answer_dat2.astype(int)
-            # 对数据进行处理
 
+        # 对数据进行处理
         unfiltered_ecg = unfiltered_ecg_dat[:, 0]
         fs = 250
 
@@ -39,38 +39,52 @@ for subject_dir in subjects:
         # r_peaks = detectors.pan_tompkins_detector(unfiltered_ecg)
         # r_peaks = np.array(detectors.wqrs_detector(unfiltered_ecg))
 
-        diff_array = np.array([])
-        for i in range(min(len(example_answer_dat),len(r_peaks))):
-            num = example_answer_dat[i] - r_peaks[i]
-            diff_array = np.append(diff_array, num)
+        # 计算实际输出和预期输出的数组元素之间的差值
+        # To do: 一般两个数组的第一个元素之间的差值可以作为该组结果差值的参照标准，
+        #        因此如果中间某一组差值突然变大，则舍弃这个结果，并跳过元素数量较多的那个数组的该index对应的元素
+        diff_list = []
+        for i in range(min(len(example_answer_dat), len(r_peaks))):
+            num = (r_peaks[i] - example_answer_dat[i]) / 250
+            if (i > 0) and ((num > diff_list[0] * 1.2) or (num < diff_list[0] * 0.8)):
+                if len(example_answer_dat) > len(r_peaks):
+                    example_answer_dat = np.delete(example_answer_dat, i)
+                if len(example_answer_dat) < len(r_peaks):
+                    r_peaks = np.delete(r_peaks, i)
+            num = (r_peaks[i] - example_answer_dat[i]) / 250
+            diff_list.append(num)
+        diff_array = np.array(diff_list)
+        delta = np.median(diff_array)
 
         # # convert the sample number to time
         # #r_peaks = np.array(r_peaks1)
-        # r_ts = r_peaks / fs
-        # ex_r_ts = example_answer_dat / fs
-        #
-        # plt.figure()
-        # t = np.linspace(0, len(unfiltered_ecg) / fs, len(unfiltered_ecg))
-        # plt.plot(t, unfiltered_ecg)
-        # plt.plot(r_ts, unfiltered_ecg[r_peaks], 'o',color = 'gold')
+        r_ts = r_peaks / fs - delta
+        ex_r_ts = example_answer_dat / fs
+
+        r_peaks = r_peaks - delta * 250
+        r_peaks = r_peaks.astype(int)
+
+        plt.figure()
+        t = np.linspace(0, len(unfiltered_ecg) / fs, len(unfiltered_ecg))
+        plt.plot(t, unfiltered_ecg)
+        plt.plot(r_ts, unfiltered_ecg[r_peaks], 'o',color = 'gold')
         # plt.plot(ex_r_ts, unfiltered_ecg[example_answer_dat], 'ro')
-        # plt.title("Detected R peaks")
-        # plt.ylabel("ECG/mV")
-        # plt.xlabel("time/sec")
-        # plt.show()
+        plt.title("Detected R peaks")
+        plt.ylabel("ECG/mV")
+        plt.xlabel("time/sec")
+        plt.show()
+
+        intervals = np.diff(r_ts)
+        heart_rate = 60.0 / intervals
+        plt.figure()
+        plt.plot(r_ts[1:], heart_rate)
+        plt.title("Heart rate")
+        plt.xlabel("time/sec")
+        plt.ylabel("HR/BPM")
+        plt.show()
         #
-        # intervals = np.diff(r_ts)
-        # heart_rate = 60.0 / intervals
-        # plt.figure()
-        # plt.plot(r_ts[1:], heart_rate)
-        # plt.title("Heart rate")
-        # plt.xlabel("time/sec")
-        # plt.ylabel("HR/BPM")
-        # plt.show()
-        #
-        # print(example_answer_dat)
-        # print('r_peaks are ',r_peaks)
-        # print(example_answer_dat.shape,r_peaks.shape)
+        print(example_answer_dat)
+        print('r_peaks are ',r_peaks)
+        print(example_answer_dat.shape, r_peaks.shape, diff_array.shape)
         print(diff_array)
         # # self.assertEqual(r_peaks,example_answer_dat)
         # np.testing.assert_array_equal(r_peaks,example_answer_dat)

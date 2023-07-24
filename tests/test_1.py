@@ -12,8 +12,8 @@ class Testecgdetectors(unittest.TestCase):
     def test_init(self):
         current_dir = pathlib.Path(__file__).resolve()
 
-        example_dir = current_dir.parent / 'test_data' / 'experiment_data' / 'subject_10' / 'walking' / 'ECG.tsv'
-        example_answer_dir = current_dir.parent / 'test_data' / 'experiment_data' / 'subject_10' / 'walking' / 'annotation_cs.tsv'
+        example_dir = current_dir.parent / 'test_data' / 'experiment_data' / 'subject_24' / 'hand_bike' / 'ECG.tsv'
+        example_answer_dir = current_dir.parent / 'test_data' / 'experiment_data' / 'subject_24' / 'hand_bike' / 'annotation_cs.tsv'
         unfiltered_ecg_dat = np.loadtxt(example_dir)
         example_answer_dat1 = np.loadtxt(example_answer_dir)
         example_answer_dat2 = example_answer_dat1.ravel()
