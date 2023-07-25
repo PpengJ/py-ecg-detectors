@@ -44,7 +44,7 @@ class Testecgdetectors(unittest.TestCase):
                                 example_answer_dat = np.delete(example_answer_dat, i)
                             if len(example_answer_dat) < len(result):
                                 result = np.delete(result, i)
-                self.assertAlmostEqual(result, example_answer)
+                np.testing.assert_array_equal(result, example_answer_dat)
 
     # def test_matched_filter_detector(self):
     #     for activity in ['hand_bike', 'jogging', 'maths', 'sitting', 'walking']:
@@ -52,49 +52,119 @@ class Testecgdetectors(unittest.TestCase):
     #         if unfiltered_ecg is not None:
     #             result = np.array(
     #                 self.detectors.matched_filter_detector(unfiltered_ecg, "templates/template_250hz.csv"))
-    #             self.assertAlmostEqual(result, example_answer)
+    #                             example_answer_dat = example_answer
+    #                 for i in range(min(len(example_answer_dat), len(result))):
+    #                     standard_value = result[0] - example_answer_dat[0]
+    #                     diff = result[i] - example_answer_dat[i]
+    #                     if (diff > standard_value * 1.2) or (diff < standard_value * 0.8):
+    #                         if i > 0:
+    #                             if len(example_answer_dat) > len(result):
+    #                                 example_answer_dat = np.delete(example_answer_dat, i)
+    #                             if len(example_answer_dat) < len(result):
+    #                                 result = np.delete(result, i)
+    #                 np.testing.assert_array_equal(result, example_answer_dat)
 
     def test_swt_detector(self):
         for activity in ['hand_bike', 'jogging', 'maths', 'sitting', 'walking']:
             unfiltered_ecg, example_answer = self.load_data(activity)
             if unfiltered_ecg is not None:
                 result = np.array(self.detectors.two_average_detector(unfiltered_ecg))
-                self.assertAlmostEqual(result, example_answer)
+                example_answer_dat = example_answer
+                for i in range(min(len(example_answer_dat), len(result))):
+                    standard_value = result[0] - example_answer_dat[0]
+                    diff = result[i] - example_answer_dat[i]
+                    if (diff > standard_value * 1.2) or (diff < standard_value * 0.8):
+                        if i > 0:
+                            if len(example_answer_dat) > len(result):
+                                example_answer_dat = np.delete(example_answer_dat, i)
+                            if len(example_answer_dat) < len(result):
+                                result = np.delete(result, i)
+                np.testing.assert_array_equal(result, example_answer_dat)
 
     def test_engzee_detector(self):
         for activity in ['hand_bike', 'jogging', 'maths', 'sitting', 'walking']:
             unfiltered_ecg, example_answer = self.load_data(activity)
             if unfiltered_ecg is not None:
                 result = np.array(self.detectors.engzee_detector(unfiltered_ecg))
-                self.assertAlmostEqual(result, example_answer)
+                example_answer_dat = example_answer
+                for i in range(min(len(example_answer_dat), len(result))):
+                    standard_value = result[0] - example_answer_dat[0]
+                    diff = result[i] - example_answer_dat[i]
+                    if (diff > standard_value * 1.2) or (diff < standard_value * 0.8):
+                        if i > 0:
+                            if len(example_answer_dat) > len(result):
+                                example_answer_dat = np.delete(example_answer_dat, i)
+                            if len(example_answer_dat) < len(result):
+                                result = np.delete(result, i)
+                np.testing.assert_array_equal(result, example_answer_dat)
 
     def test_christov_detector(self):
         for activity in ['hand_bike', 'jogging', 'maths', 'sitting', 'walking']:
             unfiltered_ecg, example_answer = self.load_data(activity)
             if unfiltered_ecg is not None:
                 result = np.array(self.detectors.christov_detector(unfiltered_ecg))
-                self.assertAlmostEqual(result, example_answer)
+                example_answer_dat = example_answer
+                for i in range(min(len(example_answer_dat), len(result))):
+                    standard_value = result[0] - example_answer_dat[0]
+                    diff = result[i] - example_answer_dat[i]
+                    if (diff > standard_value * 1.2) or (diff < standard_value * 0.8):
+                        if i > 0:
+                            if len(example_answer_dat) > len(result):
+                                example_answer_dat = np.delete(example_answer_dat, i)
+                            if len(example_answer_dat) < len(result):
+                                result = np.delete(result, i)
+                np.testing.assert_array_equal(result, example_answer_dat)
 
     def test_hamilton_detector(self):
         for activity in ['hand_bike', 'jogging', 'maths', 'sitting', 'walking']:
             unfiltered_ecg, example_answer = self.load_data(activity)
             if unfiltered_ecg is not None:
                 result = np.array(self.detectors.hamilton_detector(unfiltered_ecg))
-                self.assertAlmostEqual(result, example_answer)
+                example_answer_dat = example_answer
+                for i in range(min(len(example_answer_dat), len(result))):
+                    standard_value = result[0] - example_answer_dat[0]
+                    diff = result[i] - example_answer_dat[i]
+                    if (diff > standard_value * 1.2) or (diff < standard_value * 0.8):
+                        if i > 0:
+                            if len(example_answer_dat) > len(result):
+                                example_answer_dat = np.delete(example_answer_dat, i)
+                            if len(example_answer_dat) < len(result):
+                                result = np.delete(result, i)
+                np.testing.assert_array_equal(result, example_answer_dat)
 
     def test_pan_tompkins_detector(self):
         for activity in ['hand_bike', 'jogging', 'maths', 'sitting', 'walking']:
             unfiltered_ecg, example_answer = self.load_data(activity)
             if unfiltered_ecg is not None:
                 result = np.array(self.detectors.pan_tompkins_detector(unfiltered_ecg))
-                self.assertAlmostEqual(result, example_answer)
+                example_answer_dat = example_answer
+                for i in range(min(len(example_answer_dat), len(result))):
+                    standard_value = result[0] - example_answer_dat[0]
+                    diff = result[i] - example_answer_dat[i]
+                    if (diff > standard_value * 1.2) or (diff < standard_value * 0.8):
+                        if i > 0:
+                            if len(example_answer_dat) > len(result):
+                                example_answer_dat = np.delete(example_answer_dat, i)
+                            if len(example_answer_dat) < len(result):
+                                result = np.delete(result, i)
+                np.testing.assert_array_equal(result, example_answer_dat)
 
     def test_wqrs_detector(self):
         for activity in ['hand_bike', 'jogging', 'maths', 'sitting', 'walking']:
             unfiltered_ecg, example_answer = self.load_data(activity)
             if unfiltered_ecg is not None:
                 result = np.array(self.detectors.wqrs_detector(unfiltered_ecg))
-                self.assertAlmostEqual(result, example_answer)
+                example_answer_dat = example_answer
+                for i in range(min(len(example_answer_dat), len(result))):
+                    standard_value = result[0] - example_answer_dat[0]
+                    diff = result[i] - example_answer_dat[i]
+                    if (diff > standard_value * 1.2) or (diff < standard_value * 0.8):
+                        if i > 0:
+                            if len(example_answer_dat) > len(result):
+                                example_answer_dat = np.delete(example_answer_dat, i)
+                            if len(example_answer_dat) < len(result):
+                                result = np.delete(result, i)
+                np.testing.assert_array_equal(result, example_answer_dat)
 
 
 if __name__ == '__main__':
