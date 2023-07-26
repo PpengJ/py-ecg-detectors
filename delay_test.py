@@ -1,7 +1,6 @@
 import pathlib
 import numpy as np
 from ecgdetectors import Detectors
-import matplotlib.pyplot as plt
 
 # 每个类型的探测器的处理结果与标准点每个点相减，计算出每个标点的实际与预期的差值，即为每个点的输出延迟
 # 一共25*5*8=1000个处理结果，125个ECG文件，一共计算出1000个差值数组，对每个种类的探测器延迟取中位数，然后减去中位数延迟，从而提高R峰的标定精度
@@ -40,7 +39,7 @@ for subject_dir in subjects:
 
         detectors = Detectors(fs)
         r_peaks1 = np.array(detectors.two_average_detector(unfiltered_ecg))
-        # r_peaks2 = detectors.matched_filter_detector(unfiltered_ecg,"templates/template_250hz.csv")
+        r_peaks2 = detectors.matched_filter_detector(unfiltered_ecg)
         r_peaks3 = np.array(detectors.swt_detector(unfiltered_ecg))
         r_peaks4 = np.array(detectors.engzee_detector(unfiltered_ecg))
         r_peaks5 = np.array(detectors.christov_detector(unfiltered_ecg))
@@ -49,8 +48,8 @@ for subject_dir in subjects:
         r_peaks8 = np.array(detectors.wqrs_detector(unfiltered_ecg))
 
         # 计算实际输出和预期输出的数组元素之间的差值
-        # To do: 一般两个数组的第一个元素之间的差值可以作为该组结果差值的参照标准，
-        #        因此如果中间某一组差值突然变大，则舍弃这个结果，并跳过元素数量较多的那个数组的该index对应的元素
+        # 一般两个数组的第一个元素之间的差值可以作为该组结果差值的参照标准，
+        # 因此如果中间某一组差值突然变大，则舍弃这个结果，并跳过元素数量较多的那个数组的该index对应的元素
 
         # 1.delay array of two_average_detector
         example_answer_dat = example_answer
@@ -68,21 +67,21 @@ for subject_dir in subjects:
         diff_array1 = np.array(diff_list1)
         diff_array1 = np.delete(diff_array1, 0)
 
-        # # 2.delay array of matched_filter_detector
-        # example_answer_dat = example_answer
-        # diff_list2 = [(r_peaks2[0] - example_answer_dat[0]) / 250]
-        # for i in range(min(len(example_answer_dat), len(r_peaks2))):
-        #     num = (r_peaks2[i] - example_answer_dat[i]) / 250
-        #     if ((num > diff_list2[0] * 1.2) or (num < diff_list2[0] * 0.8)):
-        #         if i > 0:
-        #             if len(example_answer_dat) > len(r_peaks2):
-        #                 example_answer_dat = np.delete(example_answer_dat, i)
-        #             if len(example_answer_dat) < len(r_peaks2):
-        #                 r_peaks2 = np.delete(r_peaks2, i)
-        #         num = (r_peaks2[i] - example_answer_dat[i]) / 250
-        #     diff_list2.append(num)
-        # diff_array2 = np.array(diff_list2)
-        # diff_array2 = np.delete(diff_array2, 0)
+        # 2.delay array of matched_filter_detector
+        example_answer_dat = example_answer
+        diff_list2 = [(r_peaks2[0] - example_answer_dat[0]) / 250]
+        for i in range(min(len(example_answer_dat), len(r_peaks2))):
+            num = (r_peaks2[i] - example_answer_dat[i]) / 250
+            if ((num > diff_list2[0] * 1.2) or (num < diff_list2[0] * 0.8)):
+                if i > 0:
+                    if len(example_answer_dat) > len(r_peaks2):
+                        example_answer_dat = np.delete(example_answer_dat, i)
+                    if len(example_answer_dat) < len(r_peaks2):
+                        r_peaks2 = np.delete(r_peaks2, i)
+                num = (r_peaks2[i] - example_answer_dat[i]) / 250
+            diff_list2.append(num)
+        diff_array2 = np.array(diff_list2)
+        diff_array2 = np.delete(diff_array2, 0)
 
         # 3.delay array of swt_detector
         example_answer_dat = example_answer
@@ -181,7 +180,7 @@ for subject_dir in subjects:
         diff_array8 = np.delete(diff_array8, 0)
 
     diff_of_one_detector1 = np.append(diff_of_one_detector1, diff_array1)
-    # diff_of_one_detector2 = np.append(diff_of_one_detector2, diff_array2)
+    diff_of_one_detector2 = np.append(diff_of_one_detector2, diff_array2)
     diff_of_one_detector3 = np.append(diff_of_one_detector3, diff_array3)
     diff_of_one_detector4 = np.append(diff_of_one_detector4, diff_array4)
     diff_of_one_detector5 = np.append(diff_of_one_detector5, diff_array5)
@@ -190,7 +189,7 @@ for subject_dir in subjects:
     diff_of_one_detector8 = np.append(diff_of_one_detector8, diff_array8)
 
 delta1 = np.median(diff_of_one_detector1)
-# delta2 = np.median(diff_of_one_detector2)
+delta2 = np.median(diff_of_one_detector2)
 delta3 = np.median(diff_of_one_detector3)
 delta4 = np.median(diff_of_one_detector4)
 delta5 = np.median(diff_of_one_detector5)
@@ -198,7 +197,7 @@ delta6 = np.median(diff_of_one_detector6)
 delta7 = np.median(diff_of_one_detector7)
 delta8 = np.median(diff_of_one_detector8)
 print('Delta of two_average_detector is:', delta1)
-# print('Delta of matched_filter_detector is:', delta2)
+print('Delta of matched_filter_detector is:', delta2)
 print('Delta of swt_detector is:', delta3)
 print('Delta of engzee_detector is:', delta4)
 print('Delta of christov_detector is:', delta5)

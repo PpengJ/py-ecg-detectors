@@ -32,7 +32,7 @@ for subject_dir in subjects:
 
         detectors = Detectors(fs)
 
-        r_peaks5 = np.array(detectors.christov_detector(unfiltered_ecg))
+        r_peaks5 = np.array(detectors.matched_filter_detector(unfiltered_ecg))
 
 
 
@@ -40,10 +40,10 @@ for subject_dir in subjects:
 
         # # convert the sample number to time
         # #r_peaks = np.array(r_peaks1)
-        r_ts = r_peaks5 / fs - 0.004
+        r_ts = r_peaks5 / fs
         ex_r_ts = example_answer / fs
 
-        r_peaks5 = r_peaks5 - 0.004*250
+        r_peaks5 = r_peaks5
         r_peaks5 = r_peaks5.astype(int)
 
         # print(x)

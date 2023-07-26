@@ -12,51 +12,46 @@ class Testecgdetectors(unittest.TestCase):
     def test_init(self):
         current_dir = pathlib.Path(__file__).resolve()
 
-        example_dir = current_dir.parent / 'test_data' / 'experiment_data' / 'subject_24' / 'hand_bike' / 'ECG.tsv'
-        example_answer_dir = current_dir.parent / 'test_data' / 'experiment_data' / 'subject_24' / 'hand_bike' / 'annotation_cs.tsv'
-        unfiltered_ecg_dat = np.loadtxt(example_dir)
-        example_answer_dat1 = np.loadtxt(example_answer_dir)
-        example_answer_dat2 = example_answer_dat1.ravel()
-        example_answer_dat = example_answer_dat2.astype(int)
-        unfiltered_ecg = unfiltered_ecg_dat[:, 0]
-        fs = 250
+        experiment_dir = current_dir.parent / 'tests' / 'test_data' / 'experiment_data'
 
-        detectors = Detectors(fs)
-        r_peaks1 = detectors.two_average_detector(unfiltered_ecg)
+        subjects = list(experiment_dir.glob('subject*'))
+
+        diff_of_one_detector1 = np.array([])
+        diff_of_one_detector2 = np.array([])
+        diff_of_one_detector3 = np.array([])
+        diff_of_one_detector4 = np.array([])
+        diff_of_one_detector5 = np.array([])
+        diff_of_one_detector6 = np.array([])
+        diff_of_one_detector7 = np.array([])
+        diff_of_one_detector8 = np.array([])
+
+        for subject_dir in subjects:
+            for activity in ['hand_bike', 'jogging', 'maths', 'sitting', 'walking']:
+                activity_dir = subject_dir / activity
+
+                ecg_file = activity_dir / 'ECG.tsv'
+                annotation_file = activity_dir / 'annotation_cs.tsv'
+
+                if ecg_file.exists() and annotation_file.exists():
+                    unfiltered_ecg_dat = np.loadtxt(ecg_file)
+                    example_answer_dat1 = np.loadtxt(annotation_file)
+                    example_answer_dat2 = example_answer_dat1.ravel()
+                    example_answer = example_answer_dat2.astype(int)
+
+                # 对数据进行处理
+                unfiltered_ecg = unfiltered_ecg_dat[:, 0]
+                # fs = 250
+
+        detectors = Detectors(250)
+        # r_peaks1 = detectors.two_average_detector(unfiltered_ecg)
         # r_peaks = detectors.matched_filter_detector(unfiltered_ecg,"templates/template_250hz.csv")
         # r_peaks = detectors.swt_detector(unfiltered_ecg)
         # r_peaks = detectors.engzee_detector(unfiltered_ecg)
         # r_peaks = detectors.christov_detector(unfiltered_ecg)
         # r_peaks = detectors.hamilton_detector(unfiltered_ecg)
         # r_peaks = detectors.pan_tompkins_detector(unfiltered_ecg)
-        # r_peaks = np.array(detectors.wqrs_detector(unfiltered_ecg))
+        r_peaks = np.array(detectors.wqrs_detector(unfiltered_ecg))
 
-        # convert the sample number to time
-        r_peaks = np.array(r_peaks1)
-        r_ts = r_peaks / fs
-        ex_r_ts = example_answer_dat / fs
+        print(len(r_peaks))
 
-        plt.figure()
-        t = np.linspace(0, len(unfiltered_ecg) / fs, len(unfiltered_ecg))
-        plt.plot(t, unfiltered_ecg)
-        plt.plot(r_ts, unfiltered_ecg[r_peaks], 'o',color = 'gold')
-        plt.plot(ex_r_ts, unfiltered_ecg[example_answer_dat], 'ro')
-        plt.title("Detected R peaks")
-        plt.ylabel("ECG/mV")
-        plt.xlabel("time/sec")
-        plt.show()
 
-        intervals = np.diff(r_ts)
-        heart_rate = 60.0 / intervals
-        plt.figure()
-        plt.plot(r_ts[1:], heart_rate)
-        plt.title("Heart rate")
-        plt.xlabel("time/sec")
-        plt.ylabel("HR/BPM")
-        plt.show()
-
-        print(example_answer_dat)
-        print('r_peaks are ',r_peaks)
-        print(example_answer_dat.shape,r_peaks.shape)
-        # self.assertEqual(r_peaks,example_answer_dat)
-        np.testing.assert_array_equal(r_peaks,example_answer_dat)

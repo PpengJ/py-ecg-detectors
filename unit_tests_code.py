@@ -46,23 +46,23 @@ class Testecgdetectors(unittest.TestCase):
                                 result = np.delete(result, i)
                 np.testing.assert_array_equal(result, example_answer_dat)
 
-    # def test_matched_filter_detector(self):
-    #     for activity in ['hand_bike', 'jogging', 'maths', 'sitting', 'walking']:
-    #         unfiltered_ecg, example_answer = self.load_data(activity)
-    #         if unfiltered_ecg is not None:
-    #             result = np.array(
-    #                 self.detectors.matched_filter_detector(unfiltered_ecg, "templates/template_250hz.csv"))
-    #                             example_answer_dat = example_answer
-    #                 for i in range(min(len(example_answer_dat), len(result))):
-    #                     standard_value = result[0] - example_answer_dat[0]
-    #                     diff = result[i] - example_answer_dat[i]
-    #                     if (diff > standard_value * 1.2) or (diff < standard_value * 0.8):
-    #                         if i > 0:
-    #                             if len(example_answer_dat) > len(result):
-    #                                 example_answer_dat = np.delete(example_answer_dat, i)
-    #                             if len(example_answer_dat) < len(result):
-    #                                 result = np.delete(result, i)
-    #                 np.testing.assert_array_equal(result, example_answer_dat)
+    def test_matched_filter_detector(self):
+        for activity in ['hand_bike', 'jogging', 'maths', 'sitting', 'walking']:
+            unfiltered_ecg, example_answer = self.load_data(activity)
+            if unfiltered_ecg is not None:
+                result = np.array(
+                self.detectors.matched_filter_detector(unfiltered_ecg))
+                example_answer_dat = example_answer
+                for i in range(min(len(example_answer_dat), len(result))):
+                    standard_value = result[0] - example_answer_dat[0]
+                    diff = result[i] - example_answer_dat[i]
+                    if (diff > standard_value * 1.2) or (diff < standard_value * 0.8):
+                        if i > 0:
+                            if len(example_answer_dat) > len(result):
+                                example_answer_dat = np.delete(example_answer_dat, i)
+                            if len(example_answer_dat) < len(result):
+                                result = np.delete(result, i)
+                np.testing.assert_array_equal(result, example_answer_dat)
 
     def test_swt_detector(self):
         for activity in ['hand_bike', 'jogging', 'maths', 'sitting', 'walking']:
