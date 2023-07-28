@@ -3,7 +3,6 @@ import pathlib
 import numpy as np
 import unittest
 
-
 class Testecgdetectors(unittest.TestCase):
     def setUp(self):
         self.current_dir = pathlib.Path(__file__).resolve()
